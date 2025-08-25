@@ -8,5 +8,5 @@ class AuthType(Enum):
     API_KEY = "api_key"
     CLIENT_CREDENTIALS = "client_credentials"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.value

@@ -2,6 +2,7 @@ import jwt
 import threading
 import logging
 from datetime import datetime, timezone
+from typing import Optional
 
 from twilio.auth_strategy.auth_type import AuthType
 from twilio.auth_strategy.auth_strategy import AuthStrategy
@@ -9,10 +10,10 @@ from twilio.http.token_manager import TokenManager
 
 
 class TokenAuthStrategy(AuthStrategy):
-    def __init__(self, token_manager: TokenManager):
+    def __init__(self, token_manager: TokenManager) -> None:
         super().__init__(AuthType.ORGS_TOKEN)
         self.token_manager = token_manager
-        self.token = None
+        self.token: Optional[str] = None
         self.lock = threading.Lock()
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
@@ -24,7 +25,7 @@ class TokenAuthStrategy(AuthStrategy):
     def requires_authentication(self) -> bool:
         return True
 
-    def fetch_token(self):
+    def fetch_token(self) -> None:
         if self.token is None or self.token == "" or self.is_token_expired(self.token):
             with self.lock:
                 if (
@@ -35,7 +36,7 @@ class TokenAuthStrategy(AuthStrategy):
                     self.logger.info("New token fetched for accessing organization API")
                     self.token = self.token_manager.fetch_access_token()
 
-    def is_token_expired(self, token):
+    def is_token_expired(self, token: str) -> bool:
         try:
             decoded = jwt.decode(token, options={"verify_signature": False})
             exp = decoded.get("exp")

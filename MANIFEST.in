@@ -1,3 +1,5 @@
 # Include the SSL certificate file in the package distributed by pip
 recursive-include twilio/conf *
 include LICENSE
+# Include py.typed marker for type checking support
+include twilio/py.typed

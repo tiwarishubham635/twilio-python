@@ -1,3 +1,4 @@
+from typing import Optional
 from twilio.http.token_manager import TokenManager
 from twilio.rest import Client
 
@@ -12,12 +13,12 @@ class OrgTokenManager(TokenManager):
         grant_type: str,
         client_id: str,
         client_secret: str,
-        code: str = None,
-        redirect_uri: str = None,
-        audience: str = None,
-        refreshToken: str = None,
-        scope: str = None,
-    ):
+        code: Optional[str] = None,
+        redirect_uri: Optional[str] = None,
+        audience: Optional[str] = None,
+        refreshToken: Optional[str] = None,
+        scope: Optional[str] = None,
+    ) -> None:
         self.grant_type = grant_type
         self.client_id = client_id
         self.client_secret = client_secret
@@ -28,7 +29,7 @@ class OrgTokenManager(TokenManager):
         self.scope = scope
         self.client = Client()
 
-    def fetch_access_token(self):
+    def fetch_access_token(self) -> str:
         token_instance = self.client.iam.v1.token.create(
             grant_type=self.grant_type,
             client_id=self.client_id,
