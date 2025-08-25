@@ -111,6 +111,13 @@ class Client(ClientBase):
         :param str edge: Twilio Edge to make requests to, defaults to None
         :param list[str] user_agent_extensions: Additions to the user agent string
 
+        Examples:
+            # Account SID and Auth Token
+            client = Client("ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "your_auth_token")
+            
+            # API Key and API Secret (recommended for production)
+            client = Client("SKXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "your_api_secret", "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+
         :returns: Twilio Client
         :rtype: twilio.rest.Client
         """
