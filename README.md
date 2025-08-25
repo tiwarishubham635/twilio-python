@@ -305,9 +305,45 @@ print(str(r))
 <Response><Say>Welcome to twilio!</Say></Response>
 ```
 
+### Using JSON Payloads
+
+Since version 9.0.0, the Twilio Python SDK supports sending JSON payloads for API requests. This is useful for APIs that accept complex data structures or when you need more control over request formatting.
+
+```python
+from twilio.rest import Client
+import json
+
+client = Client(account_sid, auth_token)
+
+# Example: Custom API request with JSON payload
+json_payload = {
+    "message": "Hello World",
+    "metadata": {
+        "source": "python_sdk",
+        "priority": "high"
+    }
+}
+
+headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json"
+}
+
+# The SDK automatically handles JSON when Content-Type is application/json
+response = client.http_client.request(
+    method="POST",
+    url="https://api.twilio.com/your-endpoint",
+    data=json_payload,
+    headers=headers
+)
+```
+
+For comprehensive examples of JSON payload usage, see [examples/json_usage.py](./examples/json_usage.py).
+
 ### Other advanced examples
 
 - [Learn how to create your own custom HTTP client](./advanced-examples/custom-http-client.md)
+- [JSON payload usage examples](./examples/json_usage.py)
 
 ### Docker Image
 

@@ -40,6 +40,14 @@ def example():
     twiml_xml = twiml_response.to_xml()
     print("Generated twiml: {}".format(twiml_xml))
 
+    # JSON payload example (since v9.0.0)
+    print("JSON payload example...")
+    json_data = {"message": "Hello", "priority": "high"}
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    print("JSON payload: {}".format(json_data))
+    print("Use headers: {}".format(headers))
+    print("See examples/json_usage.py for complete JSON examples")
+
 
 if __name__ == "__main__":
     example()
