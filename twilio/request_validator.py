@@ -1,11 +1,11 @@
 import base64
 import hmac
 from hashlib import sha1, sha256
+from typing import Any, Dict, List, Union, Optional
+from urllib.parse import urlparse, parse_qs, ParseResult
 
-from urllib.parse import urlparse, parse_qs
 
-
-def compare(string1, string2):
+def compare(string1: str, string2: str) -> bool:
     """Compare two strings while protecting against timing attacks
 
     :param str string1: the first string
@@ -23,7 +23,7 @@ def compare(string1, string2):
     return result
 
 
-def remove_port(uri):
+def remove_port(uri: ParseResult) -> str:
     """Remove the port number from a URI
 
     :param uri: parsed URI that Twilio requested on your server
@@ -40,7 +40,7 @@ def remove_port(uri):
     return new_uri.geturl()
 
 
-def add_port(uri):
+def add_port(uri: ParseResult) -> str:
     """Add the port number to a URI
 
     :param uri: parsed URI that Twilio requested on your server
@@ -59,10 +59,10 @@ def add_port(uri):
 
 
 class RequestValidator(object):
-    def __init__(self, token):
+    def __init__(self, token: str) -> None:
         self.token = token.encode("utf-8")
 
-    def compute_signature(self, uri, params):
+    def compute_signature(self, uri: str, params: Optional[Dict[str, Any]]) -> str:
         """Compute the signature for a given request
 
         :param uri: full URI that Twilio requested on your server
@@ -80,12 +80,12 @@ class RequestValidator(object):
 
         # compute signature and compare signatures
         mac = hmac.new(self.token, s.encode("utf-8"), sha1)
-        computed = base64.b64encode(mac.digest())
-        computed = computed.decode("utf-8")
+        computed_bytes = base64.b64encode(mac.digest())
+        computed = computed_bytes.decode("utf-8")
 
         return computed.strip()
 
-    def get_values(self, param_dict, param_name):
+    def get_values(self, param_dict: Any, param_name: str) -> List[str]:
         try:
             # Support MultiDict used by Flask.
             return param_dict.getall(param_name)
@@ -97,12 +97,12 @@ class RequestValidator(object):
                 # Fallback to a standard dict.
                 return [param_dict[param_name]]
 
-    def compute_hash(self, body):
+    def compute_hash(self, body: str) -> str:
         computed = sha256(body.encode("utf-8")).hexdigest()
 
         return computed.strip()
 
-    def validate(self, uri, params, signature):
+    def validate(self, uri: str, params: Union[Dict[str, Any], str, None], signature: str) -> bool:
         """Validate a request from Twilio
 
         :param uri: full URI that Twilio requested on your server
@@ -123,6 +123,9 @@ class RequestValidator(object):
         query = parse_qs(parsed_uri.query)
         if "bodySHA256" in query and isinstance(params, str):
             valid_body_hash = compare(self.compute_hash(params), query["bodySHA256"][0])
+            params = {}
+        elif isinstance(params, str):
+            # If params is a string but no bodySHA256, treat as empty dict for signature computation
             params = {}
 
         #  check signature of uri with and without port,

@@ -88,6 +88,41 @@ After a brief delay, you will receive the text message on your phone.
 > **Warning**
 > It's okay to hardcode your credentials when testing locally, but you should use environment variables to keep them secret before committing any code or deploying to production. Check out [How to Set Environment Variables](https://www.twilio.com/blog/2017/01/how-to-set-environment-variables.html) for more information.
 
+## Type Checking Support
+
+The Twilio Python library includes type hints to support static type checking with tools like [mypy](https://mypy.readthedocs.io/), [pyright](https://github.com/microsoft/pyright), and [pylsp](https://github.com/python-lsp/python-lsp-server). This helps catch errors during development and provides better IDE support with autocompletion and inline documentation.
+
+### Using Type Checkers
+
+To use mypy with your Twilio code:
+
+```shell
+pip install mypy
+mypy your_twilio_code.py
+```
+
+### Example with Type Hints
+
+```python
+from twilio.rest import Client
+from twilio.auth_strategy.auth_type import AuthType
+from twilio.request_validator import RequestValidator
+from typing import Optional
+
+# Type hints help catch errors and provide better IDE support
+client: Client = Client("account_sid", "auth_token")
+
+# Proper type checking for request validation
+validator: RequestValidator = RequestValidator("your_auth_token")
+is_valid: bool = validator.validate(
+    uri="https://example.com/webhook",
+    params={"key": "value"},
+    signature="expected_signature"
+)
+```
+
+The library includes a `py.typed` marker to indicate full type support according to [PEP 561](https://peps.python.org/pep-0561/).
+
 ## OAuth Feature for Twilio APIs
 We are introducing Client Credentials Flow-based OAuth 2.0 authentication. This feature is currently in beta and its implementation is subject to change.
 
