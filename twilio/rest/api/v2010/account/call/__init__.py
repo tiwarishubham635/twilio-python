@@ -50,6 +50,7 @@ class CallInstance(InstanceResource):
     class UpdateStatus(object):
         CANCELED = "canceled"
         COMPLETED = "completed"
+        IN_PROGRESS = "in-progress"
 
     """
     :ivar sid: The unique string that we created to identify this Call resource.
