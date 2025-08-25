@@ -1,7 +1,12 @@
+from abc import ABC, abstractmethod
+from typing import Optional
+
 from twilio.base.version import Version
 
 
-class TokenManager:
+class TokenManager(ABC):
 
-    def fetch_access_token(self, version: Version):
+    @abstractmethod
+    def fetch_access_token(self, version: Optional[Version] = None) -> str:
+        """Fetch an access token. The version parameter is optional for backward compatibility."""
         pass
