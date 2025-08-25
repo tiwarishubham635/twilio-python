@@ -101,7 +101,9 @@ Organisation API examples [here](https://github.com/twilio/twilio-python/blob/ma
 
 The `Twilio` client needs your Twilio credentials. You can either pass these directly to the constructor (see the code below) or via environment variables.
 
-Authenticating with Account SID and Auth Token:
+The Twilio Python SDK supports **two authentication methods**:
+
+#### 1. Account SID and Auth Token (Basic Authentication)
 
 ```python
 from twilio.rest import Client
@@ -111,16 +113,22 @@ auth_token  = "your_auth_token"
 client = Client(account_sid, auth_token)
 ```
 
-Authenticating with API Key and API Secret:
+#### 2. API Key and API Secret (Recommended for Production)
+
+**API Keys provide enhanced security and better access control.** Create API Keys in your [Twilio Console](https://console.twilio.com/us1/develop/api-keys).
 
 ```python
 from twilio.rest import Client
 
-api_key = "XXXXXXXXXXXXXXXXX"
-api_secret = "YYYYYYYYYYYYYYYYYY"
-account_sid = "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+api_key = "SKXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  # Starts with 'SK'
+api_secret = "your_api_secret"
+account_sid = "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  # Your Account SID
 client = Client(api_key, api_secret, account_sid)
 ```
+
+> **Note:** When using API Keys, pass the API Key as the first parameter (username), API Secret as the second parameter (password), and your Account SID as the third parameter.
+
+#### 3. Environment Variables
 
 Alternatively, a `Client` constructor without these parameters will
 look for `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` variables inside the
@@ -133,6 +141,13 @@ somewhere public.
 ```python
 from twilio.rest import Client
 client = Client()
+```
+
+For API Key authentication with environment variables:
+```bash
+export TWILIO_ACCOUNT_SID="ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+export TWILIO_AUTH_TOKEN="your_api_secret"  # Use API Secret here
+# Note: Set your API Key as the TWILIO_ACCOUNT_SID when using this method
 ```
 
 ### Specify Region and/or Edge
