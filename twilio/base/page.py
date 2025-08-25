@@ -33,6 +33,7 @@ class Page(object):
         self._version = version
         self._payload = payload
         self._solution = solution
+        self._headers = response.headers or {}
         self._records = iter(self.load_page(payload))
 
     def __iter__(self):
@@ -95,6 +96,13 @@ class Page(object):
             return self._version.domain.absolute_url(self._payload["previous_page_uri"])
 
         return None
+
+    @property
+    def headers(self) -> dict:
+        """
+        :return dict: Returns the HTTP headers from the page response.
+        """
+        return self._headers
 
     @property
     def next_page_url(self) -> Optional[str]:

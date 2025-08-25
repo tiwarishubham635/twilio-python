@@ -39,8 +39,9 @@ class DomainConfigInstance(InstanceResource):
         version: Version,
         payload: Dict[str, Any],
         domain_sid: Optional[str] = None,
+        headers: Optional[dict] = None,
     ):
-        super().__init__(version)
+        super().__init__(version, headers=headers)
 
         self.domain_sid: Optional[str] = payload.get("domain_sid")
         self.config_sid: Optional[str] = payload.get("config_sid")
@@ -183,12 +184,13 @@ class DomainConfigContext(InstanceContext):
 
         headers["Accept"] = "application/json"
 
-        payload = self._version.fetch(method="GET", uri=self._uri, headers=headers)
+        payload, response_headers = self._version.fetch_with_headers(method="GET", uri=self._uri, headers=headers)
 
         return DomainConfigInstance(
             self._version,
             payload,
             domain_sid=self._solution["domain_sid"],
+            headers=response_headers,
         )
 
     async def fetch_async(self) -> DomainConfigInstance:
@@ -203,7 +205,7 @@ class DomainConfigContext(InstanceContext):
 
         headers["Accept"] = "application/json"
 
-        payload = await self._version.fetch_async(
+        payload, response_headers = await self._version.fetch_with_headers_async(
             method="GET", uri=self._uri, headers=headers
         )
 
@@ -211,6 +213,7 @@ class DomainConfigContext(InstanceContext):
             self._version,
             payload,
             domain_sid=self._solution["domain_sid"],
+            headers=response_headers,
         )
 
     def update(
@@ -245,12 +248,12 @@ class DomainConfigContext(InstanceContext):
 
         headers["Accept"] = "application/json"
 
-        payload = self._version.update(
+        payload, response_headers = self._version.update_with_headers(
             method="POST", uri=self._uri, data=data, headers=headers
         )
 
         return DomainConfigInstance(
-            self._version, payload, domain_sid=self._solution["domain_sid"]
+            self._version, payload, domain_sid=self._solution["domain_sid"], headers=response_headers
         )
 
     async def update_async(
@@ -285,12 +288,12 @@ class DomainConfigContext(InstanceContext):
 
         headers["Accept"] = "application/json"
 
-        payload = await self._version.update_async(
+        payload, response_headers = await self._version.update_with_headers_async(
             method="POST", uri=self._uri, data=data, headers=headers
         )
 
         return DomainConfigInstance(
-            self._version, payload, domain_sid=self._solution["domain_sid"]
+            self._version, payload, domain_sid=self._solution["domain_sid"], headers=response_headers
         )
 
     def __repr__(self) -> str:
