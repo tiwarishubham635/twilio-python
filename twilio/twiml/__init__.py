@@ -1,9 +1,10 @@
 import json
 import re
 import xml.etree.ElementTree as ET
+from typing import Any, Dict, List, Literal, Optional, Union
 
 
-def lower_camel(string):
+def lower_camel(string: str) -> str:
     if not string or "_" not in string:
         return string
 
@@ -11,7 +12,7 @@ def lower_camel(string):
     return result[0].lower() + result[1:]
 
 
-def format_language(language):
+def format_language(language: Optional[str]) -> Optional[str]:
     """
     Attempt to format language parameter as 'ww-WW'.
 
@@ -39,26 +40,26 @@ class TwiML(object):
         "break_": "break",
     }
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         self.name = self.__class__.__name__
-        self.value = None
-        self.verbs = []
-        self.attrs = {}
+        self.value: Optional[str] = None
+        self.verbs: List[Union["TwiML", str]] = []
+        self.attrs: Dict[str, Any] = {}
 
         for k, v in kwargs.items():
             if v is not None:
                 self.attrs[lower_camel(self.MAP.get(k, k))] = v
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.to_xml()
 
-    def __enter__(self):
+    def __enter__(self) -> "TwiML":
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> Literal[False]:
         return False
 
-    def to_xml(self, xml_declaration=True):
+    def to_xml(self, xml_declaration: bool = True) -> str:
         """
         Return the contents of this verb as an XML string
 
@@ -71,7 +72,7 @@ class TwiML(object):
             else xml
         )
 
-    def append(self, verb):
+    def append(self, verb: Union["TwiML", str]) -> "TwiML":
         """
         Add a TwiML doc
 
@@ -82,7 +83,7 @@ class TwiML(object):
         self.nest(verb)
         return self
 
-    def nest(self, verb):
+    def nest(self, verb: Union["TwiML", str]) -> Union["TwiML", str]:
         """
         Add a TwiML doc. Unlike `append()`, this returns the created verb.
 
@@ -96,11 +97,10 @@ class TwiML(object):
         self.verbs.append(verb)
         return verb
 
-    def xml(self):
+    def xml(self) -> ET.Element:
         el = ET.Element(self.name)
 
-        keys = self.attrs.keys()
-        keys = sorted(keys)
+        keys = sorted(self.attrs.keys())
         for a in keys:
             value = self.attrs[a]
 

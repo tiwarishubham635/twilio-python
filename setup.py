@@ -28,6 +28,9 @@ setup(
     ],
     packages=find_packages(exclude=["tests", "tests.*"]),
     include_package_data=True,
+    package_data={
+        "twilio": ["py.typed"],
+    },
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
@@ -44,6 +47,7 @@ setup(
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Communications :: Telephony",
+        "Typing :: Typed",
     ],
     long_description=long_description,
     long_description_content_type="text/markdown",
