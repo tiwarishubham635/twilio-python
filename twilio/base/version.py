@@ -112,6 +112,16 @@ class Version(object):
             raise self.exception(method, uri, response, "Unable to fetch record")
 
         return json.loads(response.text)
+    
+    def _parse_fetch_with_headers(self, method: str, uri: str, response: Response) -> tuple:
+        """
+        Parses fetch response JSON and returns both payload and headers
+        """
+        # Note that 3XX response codes are allowed for fetches.
+        if response.status_code < 200 or response.status_code >= 400:
+            raise self.exception(method, uri, response, "Unable to fetch record")
+
+        return json.loads(response.text), response.headers
 
     def fetch(
         self,
@@ -139,6 +149,33 @@ class Version(object):
         )
 
         return self._parse_fetch(method, uri, response)
+    
+    def fetch_with_headers(
+        self,
+        method: str,
+        uri: str,
+        params: Optional[Dict[str, object]] = None,
+        data: Optional[Dict[str, object]] = None,
+        headers: Optional[Dict[str, str]] = None,
+        auth: Optional[Tuple[str, str]] = None,
+        timeout: Optional[float] = None,
+        allow_redirects: bool = False,
+    ) -> tuple:
+        """
+        Fetch a resource instance and return both payload and headers.
+        """
+        response = self.request(
+            method,
+            uri,
+            params=params,
+            data=data,
+            headers=headers,
+            auth=auth,
+            timeout=timeout,
+            allow_redirects=allow_redirects,
+        )
+
+        return self._parse_fetch_with_headers(method, uri, response)
 
     async def fetch_async(
         self,
@@ -165,6 +202,32 @@ class Version(object):
             allow_redirects=allow_redirects,
         )
         return self._parse_fetch(method, uri, response)
+    
+    async def fetch_with_headers_async(
+        self,
+        method: str,
+        uri: str,
+        params: Optional[Dict[str, object]] = None,
+        data: Optional[Dict[str, object]] = None,
+        headers: Optional[Dict[str, str]] = None,
+        auth: Optional[Tuple[str, str]] = None,
+        timeout: Optional[float] = None,
+        allow_redirects: bool = False,
+    ) -> tuple:
+        """
+        Asynchronously fetch a resource instance and return both payload and headers.
+        """
+        response = await self.request_async(
+            method,
+            uri,
+            params=params,
+            data=data,
+            headers=headers,
+            auth=auth,
+            timeout=timeout,
+            allow_redirects=allow_redirects,
+        )
+        return self._parse_fetch_with_headers(method, uri, response)
 
     def _parse_update(self, method: str, uri: str, response: Response) -> Any:
         """
@@ -174,6 +237,15 @@ class Version(object):
             raise self.exception(method, uri, response, "Unable to update record")
 
         return json.loads(response.text)
+    
+    def _parse_update_with_headers(self, method: str, uri: str, response: Response) -> tuple:
+        """
+        Parses update response JSON and returns both payload and headers
+        """
+        if response.status_code < 200 or response.status_code >= 300:
+            raise self.exception(method, uri, response, "Unable to update record")
+
+        return json.loads(response.text), response.headers
 
     def update(
         self,
@@ -201,6 +273,33 @@ class Version(object):
         )
 
         return self._parse_update(method, uri, response)
+    
+    def update_with_headers(
+        self,
+        method: str,
+        uri: str,
+        params: Optional[Dict[str, object]] = None,
+        data: Optional[Dict[str, object]] = None,
+        headers: Optional[Dict[str, str]] = None,
+        auth: Optional[Tuple[str, str]] = None,
+        timeout: Optional[float] = None,
+        allow_redirects: bool = False,
+    ) -> tuple:
+        """
+        Update a resource instance and return both payload and headers.
+        """
+        response = self.request(
+            method,
+            uri,
+            params=params,
+            data=data,
+            headers=headers,
+            auth=auth,
+            timeout=timeout,
+            allow_redirects=allow_redirects,
+        )
+
+        return self._parse_update_with_headers(method, uri, response)
 
     async def update_async(
         self,
@@ -228,6 +327,33 @@ class Version(object):
         )
 
         return self._parse_update(method, uri, response)
+        
+    async def update_with_headers_async(
+        self,
+        method: str,
+        uri: str,
+        params: Optional[Dict[str, object]] = None,
+        data: Optional[Dict[str, object]] = None,
+        headers: Optional[Dict[str, str]] = None,
+        auth: Optional[Tuple[str, str]] = None,
+        timeout: Optional[float] = None,
+        allow_redirects: bool = False,
+    ) -> tuple:
+        """
+        Asynchronously update a resource instance and return both payload and headers.
+        """
+        response = await self.request_async(
+            method,
+            uri,
+            params=params,
+            data=data,
+            headers=headers,
+            auth=auth,
+            timeout=timeout,
+            allow_redirects=allow_redirects,
+        )
+
+        return self._parse_update_with_headers(method, uri, response)
 
     def _parse_delete(self, method: str, uri: str, response: Response) -> bool:
         """
@@ -435,6 +561,15 @@ class Version(object):
             raise self.exception(method, uri, response, "Unable to create record")
 
         return json.loads(response.text)
+    
+    def _parse_create_with_headers(self, method: str, uri: str, response: Response) -> tuple:
+        """
+        Parse create response JSON and return both payload and headers
+        """
+        if response.status_code < 200 or response.status_code >= 300:
+            raise self.exception(method, uri, response, "Unable to create record")
+
+        return json.loads(response.text), response.headers
 
     def create(
         self,
@@ -461,6 +596,32 @@ class Version(object):
             allow_redirects=allow_redirects,
         )
         return self._parse_create(method, uri, response)
+        
+    def create_with_headers(
+        self,
+        method: str,
+        uri: str,
+        params: Optional[Dict[str, object]] = None,
+        data: Optional[Dict[str, object]] = None,
+        headers: Optional[Dict[str, str]] = None,
+        auth: Optional[Tuple[str, str]] = None,
+        timeout: Optional[float] = None,
+        allow_redirects: bool = False,
+    ) -> tuple:
+        """
+        Create a resource instance and return both payload and headers.
+        """
+        response = self.request(
+            method,
+            uri,
+            params=params,
+            data=data,
+            headers=headers,
+            auth=auth,
+            timeout=timeout,
+            allow_redirects=allow_redirects,
+        )
+        return self._parse_create_with_headers(method, uri, response)
 
     async def create_async(
         self,
@@ -487,3 +648,29 @@ class Version(object):
             allow_redirects=allow_redirects,
         )
         return self._parse_create(method, uri, response)
+        
+    async def create_with_headers_async(
+        self,
+        method: str,
+        uri: str,
+        params: Optional[Dict[str, object]] = None,
+        data: Optional[Dict[str, object]] = None,
+        headers: Optional[Dict[str, str]] = None,
+        auth: Optional[Tuple[str, str]] = None,
+        timeout: Optional[float] = None,
+        allow_redirects: bool = False,
+    ) -> tuple:
+        """
+        Asynchronously create a resource instance and return both payload and headers.
+        """
+        response = await self.request_async(
+            method,
+            uri,
+            params=params,
+            data=data,
+            headers=headers,
+            auth=auth,
+            timeout=timeout,
+            allow_redirects=allow_redirects,
+        )
+        return self._parse_create_with_headers(method, uri, response)
